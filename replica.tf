@@ -97,7 +97,7 @@ resource "aws_iam_policy" "replication" {
       "Resource": "${aws_kms_key.this.arn}",
       "Condition": {
         "StringLike": {
-          "kms:ViaService": "s3.${data.aws_region.state.name}.amazonaws.com",
+          "kms:ViaService": "s3.${data.aws_region.state.region}.amazonaws.com",
           "kms:EncryptionContext:aws:s3:arn": [
             "${aws_s3_bucket.state.arn}/*"
           ]
@@ -113,7 +113,7 @@ resource "aws_iam_policy" "replication" {
       "Resource": "${aws_kms_key.replica[0].arn}",
       "Condition": {
         "StringLike": {
-          "kms:ViaService": "s3.${data.aws_region.replica[0].name}.amazonaws.com",
+          "kms:ViaService": "s3.${data.aws_region.replica[0].region}.amazonaws.com",
           "kms:EncryptionContext:aws:s3:arn": [
             "${aws_s3_bucket.replica[0].arn}/*"
           ]
@@ -228,6 +228,10 @@ resource "aws_s3_bucket_lifecycle_configuration" "replica" {
   rule {
     id     = "auto-archive"
     status = "Enabled"
+
+    filter {
+      prefix = ""
+    }
 
     dynamic "noncurrent_version_transition" {
       for_each = var.noncurrent_version_transitions

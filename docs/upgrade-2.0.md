@@ -25,6 +25,15 @@ The following output was removed. Remove any reference to it from your configura
 
 - `dynamodb_table`
 
+The `state_bucket` and `replica_bucket` outputs expose the non-deprecated bucket
+attributes from AWS provider v6.0, including `id`, `bucket`, `arn`, and
+`bucket_regional_domain_name`. The `replica_bucket` output is still `null`
+when replication is disabled.
+
+If your configuration reads deprecated attributes such as `acl`, `policy`,
+or `website_endpoint` from these outputs, update it to use the corresponding
+standalone S3 configuration resource.
+
 ## Update the backend configuration
 
 Replace `dynamodb_table` with `use_lockfile = true` in every backend configuration pointing to the state bucket.
